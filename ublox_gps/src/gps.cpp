@@ -88,19 +88,32 @@ bool Gps::setBaudrate(unsigned int baudrate) {
   baudrate_ = baudrate;
   if (!worker_) return true;
 
-  CfgPRT port;
-  port.baudRate = baudrate_;
-  port.mode = CfgPRT::MODE_RESERVED1 | CfgPRT::MODE_CHAR_LEN_8BIT |
+  CfgPRT port_UART1,port_UART2,port_USB;
+  port_UART1.baudRate = baudrate_;
+  port_UART1.mode = CfgPRT::MODE_RESERVED1 | CfgPRT::MODE_CHAR_LEN_8BIT |
               CfgPRT::MODE_PARITY_NO | CfgPRT::MODE_STOP_BITS_1;
-  port.inProtoMask =
-      CfgPRT::PROTO_UBX | CfgPRT::PROTO_NMEA | CfgPRT::PROTO_RTCM;
-  port.outProtoMask = CfgPRT::PROTO_UBX;
-  port.portID = CfgPRT::PORT_ID_UART1;
+  port_UART1.inProtoMask =
+      CfgPRT::PROTO_UBX | CfgPRT::PROTO_NMEA | CfgPRT::PROTO_RTCM3;
+  port_UART1.outProtoMask = CfgPRT::PROTO_UBX | CfgPRT::PROTO_NMEA | CfgPRT::PROTO_RTCM3;
+  port_UART1.portID = CfgPRT::PORT_ID_UART1;
+
+  port_UART2.baudRate = baudrate_;
+  port_UART2.mode = CfgPRT::MODE_RESERVED1 | CfgPRT::MODE_CHAR_LEN_8BIT |
+              CfgPRT::MODE_PARITY_NO | CfgPRT::MODE_STOP_BITS_1;
+  port_UART2.inProtoMask =
+      CfgPRT::PROTO_UBX | CfgPRT::PROTO_NMEA | CfgPRT::PROTO_RTCM3;
+  port_UART2.outProtoMask = CfgPRT::PROTO_UBX | CfgPRT::PROTO_NMEA | CfgPRT::PROTO_RTCM3;
+  port_UART2.portID = CfgPRT::PORT_ID_UART2;
+
+  port_USB.inProtoMask =
+      CfgPRT::PROTO_UBX | CfgPRT::PROTO_NMEA | CfgPRT::PROTO_RTCM3;
+  port_USB.outProtoMask = CfgPRT::PROTO_UBX | CfgPRT::PROTO_NMEA | CfgPRT::PROTO_RTCM3;
+  port_USB.portID = CfgPRT::PORT_ID_USB;
 
   if (debug) {
     std::cout << "Changing baudrate to " << baudrate << std::endl;
   }
-  return configure(port);
+  return(configure(port_UART1) && configure(port_UART2) && configure(port_USB));
 }
 
 void Gps::initialize(const boost::shared_ptr<Worker>& worker) {

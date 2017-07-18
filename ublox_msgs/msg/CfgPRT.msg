@@ -60,6 +60,7 @@ uint16 outProtoMask       # A mask describing which output protocols are active.
 uint16 PROTO_UBX = 1
 uint16 PROTO_NMEA = 2
 uint16 PROTO_RTCM = 4
+uint16 PROTO_RTCM3 = 32
 
 uint16 reserved4          # Always set to zero
 uint16 reserved5          # Always set to zero
